@@ -34,6 +34,8 @@ for x in site.find_all('a'):
         links_year[x.getText()] = 'https://www.consultant.ru'+''.join(re.findall(
             r'href="(/\w+/\w+/\w+/\w+/\d+\w?/)"',
             str(x.parent)))
+a = ''.join(list(set(list(map(str, list(range(int(years[-1]), int(years[0])+1))))) - set(years)))
+links_year[a] = list(links_year.values())[0][:-5] + f'{a}/'
 links_year = dict(sorted(links_year.items()))
 
 
