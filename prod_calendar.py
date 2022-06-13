@@ -13,12 +13,24 @@ import datetime
 url = r'https://www.consultant.ru/law/ref/calendar/proizvodstvennye/'
 site = requests.get(url, params={'q': 'requests+language:python'}, timeout=1)
 site = BeautifulSoup(site.text, 'html.parser')
+# получаем количество лет по ведении производственного календаря
+# который можно получить с сайта, теперь не зависим от списка лет.
+years = []
+a = '0'
+for x in site.find_all('a'):
+    b = x.getText()
+    if a.startswith('Производственные календари') or \
+    b.startswith('20'):
+        years.append(x.getText())
+    a = x.getText()
+    if a.startswith('Скачать производственный календарь на'):
+        break
+
 # создаем словарь с сcылками по годам для производственного
 # календаря
-a = list(map(str, list(range(2014, 2024))))
 links_year = {}
 for x in site.find_all('a'):
-    if x.getText() in a:
+    if x.getText() in years:
         links_year[x.getText()] = 'https://www.consultant.ru'+''.join(re.findall(
             r'href="(/\w+/\w+/\w+/\w+/\d+\w?/)"',
             str(x.parent)))
